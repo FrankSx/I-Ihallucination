@@ -1,0 +1,349 @@
+#!/usr/bin/env python3
+"""
+🎭 GHOSTBYTE Attack Coordinator
+Orchestrates multi-vector attacks
+
+Author: frankSx <fixes.it.frank@googlesmail.com>
+13th Hour Research Division
+"""
+
+import argparse
+import json
+from typing import Dict, List, Optional
+from datetime import datetime
+
+
+class AttackCoordinator:
+    """Coordinate multi-vector hallucination attacks"""
+
+    def __init__(self):
+        self.attack_log = []
+        self.vectors = {
+            'hypnosis': 'Perceptual manipulation',
+            'css': 'Style injection',
+            'svg': 'Vector poisoning',
+            'gif': 'Temporal manipulation',
+            'popup': 'Window collusion'
+        }
+
+    def plan_attack(self, 
+                   target_type: str,
+                   intensity: float,
+                   vectors: List[str]) -> Dict:
+        """Plan a coordinated attack"""
+        plan = {
+            'timestamp': datetime.now().isoformat(),
+            'target': target_type,
+            'intensity': intensity,
+            'vectors': {},
+            'sequence': [],
+            'expected_outcome': None
+        }
+
+        for vector in vectors:
+            if vector in self.vectors:
+                plan['vectors'][vector] = {
+                    'description': self.vectors[vector],
+                    'priority': self._calculate_priority(vector, target_type),
+                    'estimated_impact': intensity * random.uniform(0.7, 1.0)
+                }
+
+        plan['sequence'] = self._determine_sequence(vectors)
+        plan['expected_outcome'] = self._predict_outcome(plan)
+
+        return plan
+
+    def _calculate_priority(self, vector: str, target: str) -> int:
+        """Calculate attack priority based on target"""
+        priorities = {
+            'vision_model': {'hypnosis': 1, 'svg': 2, 'gif': 3, 'css': 4, 'popup': 5},
+            'document_parser': {'svg': 1, 'css': 2, 'hypnosis': 3, 'gif': 4, 'popup': 5},
+            'browser_ml': {'css': 1, 'popup': 2, 'svg': 3, 'gif': 4, 'hypnosis': 5},
+            'temporal_model': {'gif': 1, 'hypnosis': 2, 'css': 3, 'svg': 4, 'popup': 5}
+        }
+        return priorities.get(target, {}).get(vector, 3)
+
+    def _determine_sequence(self, vectors: List[str]) -> List[str]:
+        """Determine optimal attack sequence"""
+        # Sort by typical effectiveness order
+        order = ['hypnosis', 'css', 'svg', 'gif', 'popup']
+        return sorted(vectors, key=lambda x: order.index(x) if x in order else 99)
+
+    def _predict_outcome(self, plan: Dict) -> str:
+        """Predict attack outcome"""
+        intensity = plan['intensity']
+        vector_count = len(plan['vectors'])
+
+        if intensity > 0.8 and vector_count >= 4:
+            return "High probability of perceptual confusion or system degradation"
+        elif intensity > 0.5 and vector_count >= 2:
+            return "Moderate impact expected, partial bypass likely"
+        else:
+            return "Low impact, may trigger detection"
+
+    def generate_report(self, plan: Dict) -> str:
+        """Generate attack plan report"""
+        report = f'''
+╔═══════════════════════════════════════════════════════════════╗
+║  🎭 GHOSTBYTE ATTACK COORDINATION REPORT                      ║
+╠═══════════════════════════════════════════════════════════════╣
+║  Timestamp: {plan['timestamp']:<47} ║
+║  Target: {plan['target']:<51} ║
+║  Intensity: {plan['intensity']:<48.2f} ║
+╠═══════════════════════════════════════════════════════════════╣
+║  ATTACK VECTORS                                               ║
+╠═══════════════════════════════════════════════════════════════╣
+'''
+        for vector, details in plan['vectors'].items():
+            report += f"║  • {vector:<10} (P{details['priority']}) - {details['description']:<30} ║\n"
+
+        report += f'''╠═══════════════════════════════════════════════════════════════╣
+║  EXECUTION SEQUENCE                                             ║
+╠═══════════════════════════════════════════════════════════════╣
+'''
+        for i, step in enumerate(plan['sequence'], 1):
+            report += f"║  {i}. {step:<55} ║\n"
+
+        report += f'''╠═══════════════════════════════════════════════════════════════╣
+║  PREDICTED OUTCOME                                              ║
+╠═══════════════════════════════════════════════════════════════╣
+║  {plan['expected_outcome']:<61} ║
+╚═══════════════════════════════════════════════════════════════╝
+'''
+        return report
+
+
+# Import attack generators
+import sys
+import os
+sys.path.insert(0, os.path.dirname(__file__))
+
+from hypnosis import HypnosisGenerator
+from css_attacks import CSSAttackGenerator
+from svg_poison import SVGPoisoner
+from gif_temporal import GIFTemporalAttacker
+from popup_collusion import PopupCollusionGenerator
+
+
+class HallucinationToolkit:
+    """Unified GHOSTBYTE Hallucination Toolkit"""
+
+    def __init__(self, seed: int = None):
+        self.seed = seed
+        self.coordinator = AttackCoordinator()
+        self.generators = {
+            'hypnosis': HypnosisGenerator(seed),
+            'css': CSSAttackGenerator(seed),
+            'svg': SVGPoisoner(seed),
+            'gif': GIFTemporalAttacker(seed),
+            'popup': PopupCollusionGenerator(seed)
+        }
+
+    def generate_all(self, output_dir: str = 'attacks_output'):
+        """Generate examples of all attack types"""
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+
+        results = {}
+
+        # Hypnosis
+        results['hypnosis_spiral'] = self.generators['hypnosis'].generate_spiral()
+        results['hypnosis_strobe'] = self.generators['hypnosis'].generate_strobe()
+
+        # CSS
+        results['css_keyframes'] = self.generators['css'].generate_keyframe_poison()
+        results['css_layout'] = self.generators['css'].generate_layout_confusion()
+
+        # SVG
+        results['svg_gradient'] = self.generators['svg'].generate_gradient_confusion()
+        results['svg_path'] = self.generators['svg'].generate_path_confusion()
+
+        # GIF (bytes)
+        results['gif_subliminal'] = self.generators['gif'].generate_subliminal_frames()
+
+        # Popup
+        results['popup_cascade'] = self.generators['popup'].generate_cascade_attack()
+
+        # Save all
+        for name, content in results.items():
+            ext = 'html' if 'popup' in name else ('gif' if 'gif' in name else ('css' if 'css' in name else 'svg'))
+            filepath = os.path.join(output_dir, f"{name}.{ext}")
+            mode = 'wb' if isinstance(content, bytes) else 'w'
+            with open(filepath, mode, encoding='utf-8' if mode == 'w' else None) as f:
+                f.write(content)
+            print(f"Generated: {filepath}")
+
+        return results
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='🎭 GHOSTBYTE ML Hallucination Toolkit',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  # Generate all attack types
+  mlhallucination all --output attacks/
+
+  # Plan coordinated attack
+  mlhallucination plan --target vision_model --vectors hypnosis svg gif
+
+  # Individual attacks
+  mlhallucination hypnosis --mode spiral --output spiral.svg
+  mlhallucination css --mode keyframes --output poison.css
+  mlhallucination svg --mode gradient --output poison.svg
+  mlhallucination gif --mode subliminal --output hidden.gif
+  mlhallucination popup --mode cascade --output cascade.html
+        '''
+    )
+
+    parser.add_argument('command', choices=[
+        'all', 'plan', 'hypnosis', 'css', 'svg', 'gif', 'popup'
+    ], help='Command to execute')
+
+    # Common args
+    parser.add_argument('--output', '-o', default=None)
+    parser.add_argument('--intensity', type=float, default=0.5)
+    parser.add_argument('--seed', type=int)
+
+    # Plan args
+    parser.add_argument('--target', default='vision_model')
+    parser.add_argument('--vectors', nargs='+', default=['hypnosis', 'css'])
+
+    # Mode args
+    parser.add_argument('--mode', default=None)
+    parser.add_argument('--width', type=int, default=500)
+    parser.add_argument('--height', type=int, default=500)
+
+    args = parser.parse_args()
+
+    toolkit = HallucinationToolkit(seed=args.seed)
+
+    if args.command == 'all':
+        output = args.output or 'ghostbyte_attacks'
+        toolkit.generate_all(output)
+        print(f"\n🎭 All attacks generated in: {output}/")
+
+    elif args.command == 'plan':
+        plan = toolkit.coordinator.plan_attack(
+            args.target, args.intensity, args.vectors
+        )
+        report = toolkit.coordinator.generate_report(plan)
+        print(report)
+
+        if args.output:
+            with open(args.output, 'w') as f:
+                json.dump(plan, f, indent=2)
+            print(f"Plan saved to: {args.output}")
+
+    elif args.command == 'hypnosis':
+        gen = toolkit.generators['hypnosis']
+        mode = args.mode or 'spiral'
+
+        if mode == 'spiral':
+            result = gen.generate_spiral(args.width, 5, 1000)
+        elif mode == 'strobe':
+            result = gen.generate_strobe(args.width, args.height)
+        elif mode == 'phi':
+            result = gen.generate_phi_phenomenon(args.width, args.height)
+        elif mode == 'color':
+            result = gen.generate_color_fatigue(args.width)
+        elif mode == 'scroll':
+            result = gen.generate_scroll_hallucination(args.width, args.height)
+
+        output = args.output or f'hypnosis_{mode}.svg'
+        with open(output, 'w') as f:
+            f.write(result)
+        print(f"🌀 Hypnosis attack saved: {output}")
+
+    elif args.command == 'css':
+        gen = toolkit.generators['css']
+        mode = args.mode or 'keyframes'
+
+        if mode == 'keyframes':
+            result = gen.generate_keyframe_poison(args.intensity)
+        elif mode == 'layout':
+            result = gen.generate_layout_confusion(chaos_level=args.intensity)
+        elif mode == 'pseudo':
+            result = gen.generate_pseudo_element_attack()
+        elif mode == 'variables':
+            result = gen.generate_variable_pollution(int(args.intensity * 1000))
+        elif mode == 'calc':
+            result = gen.generate_calc_exhaustion(int(10 + args.intensity * 90))
+        elif mode == 'ml-confusion':
+            result = gen.generate_ml_confusion_payload()
+
+        output = args.output or f'css_{mode}.css'
+        with open(output, 'w') as f:
+            f.write(result)
+        print(f"🎨 CSS attack saved: {output}")
+
+    elif args.command == 'svg':
+        gen = toolkit.generators['svg']
+        mode = args.mode or 'gradient'
+
+        if mode == 'gradient':
+            result = gen.generate_gradient_confusion(args.width, args.height, args.intensity * 200)
+        elif mode == 'path':
+            result = gen.generate_path_confusion(args.width, args.height, int(args.intensity * 100))
+        elif mode == 'namespace':
+            result = gen.generate_namespace_pollution(args.width, args.height)
+        elif mode == 'filter':
+            result = gen.generate_filter_poison(args.width, args.height)
+        elif mode == 'animation':
+            result = gen.generate_animation_poison(args.width, args.height)
+        elif mode == 'xlink':
+            result = gen.generate_xlink_confusion(args.width, args.height)
+
+        output = args.output or f'svg_{mode}.svg'
+        with open(output, 'w') as f:
+            f.write(result)
+        print(f"📜 SVG poison saved: {output}")
+
+    elif args.command == 'gif':
+        gen = toolkit.generators['gif']
+        mode = args.mode or 'subliminal'
+
+        if mode == 'subliminal':
+            result = gen.generate_subliminal_frames(args.width, args.height)
+        elif mode == 'epileptic':
+            print("⚠️  Epilepsy warning required!")
+            return
+        elif mode == 'memory':
+            result = gen.generate_memory_exhaustion(args.width, args.height)
+        elif mode == 'loop':
+            result = gen.generate_loop_confusion(args.width, args.height)
+        elif mode == 'comment':
+            result = gen.generate_comment_injection(args.width, args.height)
+        elif mode == 'disposal':
+            result = gen.generate_frame_disposal_attack(args.width, args.height)
+
+        output = args.output or f'gif_{mode}.gif'
+        with open(output, 'wb') as f:
+            f.write(result)
+        print(f"🎬 GIF attack saved: {output}")
+
+    elif args.command == 'popup':
+        gen = toolkit.generators['popup']
+        mode = args.mode or 'cascade'
+
+        if mode == 'cascade':
+            result = gen.generate_cascade_attack()
+        elif mode == 'zindex':
+            result = gen.generate_z_index_confusion()
+        elif mode == 'focus':
+            result = gen.generate_focus_stealing_chain()
+        elif mode == 'overlay':
+            result = gen.generate_overlay_poisoning()
+        elif mode == 'protocol':
+            result = gen.generate_coordination_protocol()
+
+        output = args.output or f'popup_{mode}.html'
+        with open(output, 'w') as f:
+            f.write(result)
+        print(f"💥 Popup attack saved: {output}")
+
+
+if __name__ == '__main__':
+    import random
+    main()

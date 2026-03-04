@@ -1,0 +1,9 @@
+# ML Hallucination Toolkit Requirements
+# Python 3.8+
+
+# Core (stdlib only)
+# No external dependencies required
+
+# Optional for advanced features:
+# Pillow>=9.0.0  # For advanced GIF manipulation
+# numpy>=1.21.0  # For numerical operations
